@@ -1,0 +1,120 @@
+/* index.css - Fact-Check Studio Design System & Theme Tokens */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+/* Default Light Mode (Fact-Check Studio Editorial Warm Paper Palette) */
+:root,
+[data-theme="light"] {
+  --nv-ink: #1C2333;
+  --nv-paper: #F3F0E8;
+  --nv-paper-card: #FCFAF6;
+  --nv-paper-hover: #EBE6DB;
+  --nv-green: #35684A;
+  --nv-rust: #A8432A;
+  --nv-amber: #9C7423;
+  --nv-purple: #6B46C1;
+  --nv-blue: #2B4C7E;
+  --nv-line: #D8D2C4;
+  --nv-line-strong: #C4BCAC;
+  --nv-muted: #6B6558;
+  --nv-dim: #8E8777;
+
+  /* App Mapped Variables */
+  --bg-dark: var(--nv-paper);
+  --bg-card: var(--nv-paper-card);
+  --bg-card-hover: var(--nv-paper-hover);
+  --border-color: var(--nv-line);
+  --border-highlight: var(--nv-line-strong);
+  
+  --text-main: var(--nv-ink);
+  --text-muted: var(--nv-muted);
+  --text-dim: var(--nv-dim);
+
+  --accent-blue: var(--nv-blue);
+  --accent-cyan: #1E40AF;
+  --verified-green: var(--nv-green);
+  --fake-red: var(--nv-rust);
+  --misleading-amber: var(--nv-amber);
+  --satire-purple: var(--nv-purple);
+
+  --glow-verified: 0 0 16px rgba(53, 104, 74, 0.15);
+  --glow-fake: 0 0 16px rgba(168, 67, 42, 0.15);
+  --glow-misleading: 0 0 16px rgba(156, 116, 35, 0.15);
+
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  
+  --body-bg-pattern: radial-gradient(circle at 10% 10%, rgba(53, 104, 74, 0.04) 0%, transparent 40%),
+                      radial-gradient(circle at 90% 90%, rgba(168, 67, 42, 0.04) 0%, transparent 40%);
+}
+
+/* Dark Mode (Fact-Check Studio Dark Slate Palette) */
+[data-theme="dark"] {
+  --nv-ink: #F3F0E8;
+  --nv-paper: #121824;
+  --nv-paper-card: #1C2333;
+  --nv-paper-hover: #263045;
+  --nv-green: #4ADE80;
+  --nv-rust: #F87171;
+  --nv-amber: #FBBF24;
+  --nv-purple: #C084FC;
+  --nv-blue: #60A5FA;
+  --nv-line: #2D3748;
+  --nv-line-strong: #4A5568;
+  --nv-muted: #A0AEC0;
+  --nv-dim: #718096;
+
+  /* App Mapped Variables */
+  --bg-dark: var(--nv-paper);
+  --bg-card: var(--nv-paper-card);
+  --bg-card-hover: var(--nv-paper-hover);
+  --border-color: var(--nv-line);
+  --border-highlight: var(--nv-line-strong);
+  
+  --text-main: var(--nv-ink);
+  --text-muted: var(--nv-muted);
+  --text-dim: var(--nv-dim);
+
+  --accent-blue: var(--nv-blue);
+  --accent-cyan: #38BDF8;
+  --verified-green: var(--nv-green);
+  --fake-red: var(--nv-rust);
+  --misleading-amber: var(--nv-amber);
+  --satire-purple: var(--nv-purple);
+
+  --glow-verified: 0 0 20px rgba(74, 222, 128, 0.2);
+  --glow-fake: 0 0 20px rgba(248, 113, 113, 0.2);
+  --glow-misleading: 0 0 20px rgba(251, 191, 36, 0.2);
+
+  --font-heading: 'Fraunces', serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+
+  --body-bg-pattern: radial-gradient(circle at 15% 15%, rgba(96, 165, 250, 0.06) 0%, transparent 40%),
+                      radial-gradient(circle at 85% 85%, rgba(192, 132, 252, 0.05) 0%, transparent 40%);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  background-image: var(--body-bg-pattern);
+  background-attachment: fixed;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+button, input, select, textarea {
+  font-family: var(--font-body);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
