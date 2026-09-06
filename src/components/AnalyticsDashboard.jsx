@@ -25,7 +25,7 @@ export default function AnalyticsDashboard({ posts }) {
           <div>
             <span className="stat-label">Total Claims Analyzed</span>
             <h3 className="stat-number">{posts.length}</h3>
-            <span className="stat-sub">Real-time social stream</span>
+            <span className="stat-sub">Tracked news & claim threads</span>
           </div>
         </div>
 

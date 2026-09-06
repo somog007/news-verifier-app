@@ -1,6 +1,6 @@
-// LiveFeed.jsx - Customizable Social & Wire Stream Monitor
+// LiveFeed.jsx - Tracked News & Claim Threads Hub
 import React, { useState } from 'react';
-import { Filter, Radio, RefreshCw, ShieldCheck, ShieldAlert, AlertTriangle, Sparkles, Globe, Sliders, Check } from 'lucide-react';
+import { Filter, MessageSquare, RefreshCw, ShieldCheck, ShieldAlert, AlertTriangle, Sparkles, Globe, Sliders, Check } from 'lucide-react';
 import PostCard from './PostCard';
 import { TRUSTED_DOMAINS } from '../data/newsDatabase';
 
@@ -94,8 +94,8 @@ export default function LiveFeed({
       <div className="feed-controls-card">
         <div className="controls-header">
           <div className="controls-title">
-            <Radio className="pulse-icon" size={18} />
-            <span>Social & Wire Stream Monitor ({filteredPosts.length})</span>
+            <MessageSquare size={18} />
+            <span>Tracked News & Claim Threads ({filteredPosts.length})</span>
           </div>
 
           <div className="stream-customizer-controls" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -103,12 +103,12 @@ export default function LiveFeed({
               className={`filter-chip ${showSourceCustomizer ? 'active' : ''}`}
               onClick={() => setShowSourceCustomizer(!showSourceCustomizer)}
             >
-              <Sliders size={14} /> Customize Sources ({activeSourcesCount})
+              <Sliders size={14} /> Filter Sources ({activeSourcesCount})
             </button>
 
             <input 
               type="text" 
-              placeholder="Search feed by keyword, topic, or handle..."
+              placeholder="Search threads by keyword, topic, or handle..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="feed-search-input"
@@ -136,7 +136,7 @@ export default function LiveFeed({
             </div>
 
             <div style={{ fontSize: '12.5px', fontWeight: '600', color: 'var(--text-muted)', marginBottom: '8px' }}>
-              Select Regional & Global Wire Channels to Track:
+              Select Regional & Global Wire Channels to Filter:
             </div>
             <div className="wire-toggle-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '6px' }}>
               {TRUSTED_DOMAINS.map((domain) => {
@@ -165,7 +165,7 @@ export default function LiveFeed({
             className={`filter-chip ${filterCategory === 'ALL' ? 'active' : ''}`}
             onClick={() => setFilterCategory('ALL')}
           >
-            All Posts ({posts.length})
+            All Threads ({posts.length})
           </button>
 
           <button 
@@ -198,10 +198,9 @@ export default function LiveFeed({
         </div>
       </div>
 
-      {/* Stream Active Status Badge */}
+      {/* Tracked Threads Status Bar */}
       <div className="stream-status-bar" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12.5px', color: 'var(--text-muted)', marginBottom: '16px', padding: '0 4px' }}>
-        <span className="pulse-dot active" style={{ display: 'inline-block' }}></span>
-        <span>Tracking Live News Stream: <strong>{activeSourcesCount} Wire Channels</strong> across <strong>{selectedRegion}</strong></span>
+        <span>Tracked News & Claims to Check Back On: <strong>{posts.length} Saved Threads</strong></span>
       </div>
 
       {/* Feed Posts Grid */}
@@ -213,7 +212,7 @@ export default function LiveFeed({
         ) : (
           <div className="empty-feed-card" style={{ textAlign: 'center', padding: '3rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px' }}>
             <RefreshCw className="empty-icon" size={32} style={{ marginBottom: '1rem', color: 'var(--text-muted)' }} />
-            <p style={{ color: 'var(--text-muted)' }}>No social posts match your active wire channel and region selections.</p>
+            <p style={{ color: 'var(--text-muted)' }}>No tracked threads match your active filters. Search a news item or claim to add it as a thread to check back on!</p>
             <button 
               className="filter-chip" 
               style={{ margin: '1rem auto 0', display: 'inline-flex' }}
@@ -223,7 +222,7 @@ export default function LiveFeed({
                 setFilterCategory('ALL');
               }}
             >
-              Reset All Stream Filters
+              Reset All Thread Filters
             </button>
           </div>
         )}

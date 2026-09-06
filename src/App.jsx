@@ -6,21 +6,19 @@ import LiveFeed from './components/LiveFeed';
 import SourceTraceModal from './components/SourceTraceModal';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import NewsVerifier from './components/NewsVerifier';
-import { INITIAL_POSTS, SIMULATED_STREAM_POOL, TRUSTED_DOMAINS } from './data/newsDatabase';
+import { INITIAL_POSTS, TRUSTED_DOMAINS } from './data/newsDatabase';
 import { analyzeClaim } from './services/verifierEngine';
 import './App.css';
 
 export default function App() {
   const [posts, setPosts] = useState(INITIAL_POSTS);
-  const [isLive, setIsLive] = useState(true);
   const [activeTab, setActiveTab] = useState('verifier'); // 'verifier' | 'feed' | 'analytics' | 'sources'
   const [filterCategory, setFilterCategory] = useState('ALL');
   const [selectedPost, setSelectedPost] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [poolIndex, setPoolIndex] = useState(0);
   const [verifierClaim, setVerifierClaim] = useState('');
 
-  // User Source & Region Stream Tracking Selection State
+  // User Source & Region Selection State
   const [selectedSources, setSelectedSources] = useState(['ALL']);
   const [selectedRegion, setSelectedRegion] = useState('ALL');
 
@@ -80,36 +78,17 @@ export default function App() {
     }
   };
 
-  // User-dependent Live Stream Interval
-  useEffect(() => {
-    if (!isLive) return;
-
-    const timer = setInterval(() => {
-      setPosts(prevPosts => {
-        // Filter stream pool according to user source and region selections
-        const eligiblePool = SIMULATED_STREAM_POOL.filter(item => {
-          const matchesRegion = selectedRegion === 'ALL' || item.region === selectedRegion || item.country === selectedRegion;
-          const matchesSource = selectedSources.length === 0 || selectedSources.includes('ALL') || selectedSources.includes(item.sourceDomain);
-          return matchesRegion && matchesSource;
-        });
-
-        const targetPool = eligiblePool.length > 0 ? eligiblePool : SIMULATED_STREAM_POOL;
-        const nextItem = targetPool[poolIndex % targetPool.length];
-        
-        const newPost = {
-          ...nextItem,
-          id: `live-${Date.now()}`,
-          timestamp: "Just now",
-          rawTimestamp: new Date().toISOString()
-        };
-        // Keep feed under 20 posts for clean UX
-        return [newPost, ...prevPosts.slice(0, 19)];
-      });
-      setPoolIndex(prev => prev + 1);
-    }, 9000); // add new simulated live post every 9s
-
-    return () => clearInterval(timer);
-  }, [isLive, poolIndex, selectedSources, selectedRegion]);
+  // Add searched news or claim thread to tracked threads list
+  const handleAddThread = (newPost) => {
+    if (!newPost) return;
+    setPosts(prev => {
+      const exists = prev.some(p => p.content.trim().toLowerCase() === newPost.content.trim().toLowerCase());
+      if (exists) {
+        return prev.map(p => p.content.trim().toLowerCase() === newPost.content.trim().toLowerCase() ? newPost : p);
+      }
+      return [newPost, ...prev];
+    });
+  };
 
   // Handle manual user claim / URL verification
   const handleVerifyClaim = (claimText) => {
@@ -120,7 +99,7 @@ export default function App() {
     setTimeout(() => {
       const result = analyzeClaim(claimText);
       if (result) {
-        setPosts(prev => [result, ...prev]);
+        handleAddThread(result);
         setSelectedPost(result); // Auto open trace modal for inspected claim!
       }
       setIsScanning(false);
@@ -131,8 +110,6 @@ export default function App() {
     <div className="app-layout">
       {/* Top Header Navigation */}
       <Header 
-        isLive={isLive} 
-        setIsLive={setIsLive} 
         postCount={posts.length} 
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -150,10 +127,10 @@ export default function App() {
 
         {/* Tab 0: Editorial Fact-Check Studio (NewsVerifier) */}
         {activeTab === 'verifier' && (
-          <NewsVerifier initialClaim={verifierClaim} />
+          <NewsVerifier initialClaim={verifierClaim} onAddPost={handleAddThread} />
         )}
 
-        {/* Tab 1: Live Social Feed */}
+        {/* Tab 1: Tracked Threads Feed */}
         {activeTab === 'feed' && (
           <LiveFeed 
             posts={posts} 
@@ -205,7 +182,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="app-footer">
-        <p>VerifiNews Engine • Real-Time Social Media Fake News Detection & Source Provenance System</p>
+        <p>VerifiNews Engine • Social Media Fake News Detection & Source Provenance System</p>
       </footer>
     </div>
   );

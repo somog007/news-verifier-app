@@ -21,9 +21,9 @@ export default function ClaimInputBar({ onVerifyClaim, isScanning }) {
       <div className="verifier-header">
         <div className="verifier-title">
           <Sparkles className="sparkle-icon" size={20} />
-          <span>Pre-Virality Origin Radar & Source Verifier</span>
+          <span>Pre-Virality Origin Radar & Claim Verifier</span>
         </div>
-        <span className="verifier-badge">⚡ Trace Origin Before Sharing</span>
+        <span className="verifier-badge">⚡ Trace Origin & Track Thread</span>
       </div>
 
       <form onSubmit={handleSubmit} className="claim-form">
@@ -44,7 +44,7 @@ export default function ClaimInputBar({ onVerifyClaim, isScanning }) {
               </>
             ) : (
               <>
-                Verify Claim <ArrowRight size={16} />
+                Verify & Track Thread <ArrowRight size={16} />
               </>
             )}
           </button>

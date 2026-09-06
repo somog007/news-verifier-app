@@ -1,9 +1,9 @@
-// Header.jsx - Application top bar with live connection indicator & theme switcher
+// Header.jsx - Application top bar & theme switcher
 import React from 'react';
-import { ShieldCheck, Radio, Activity, Layers, Search } from 'lucide-react';
+import { ShieldCheck, MessageSquare, Activity, Layers, Search } from 'lucide-react';
 import ThemeSelector from './ThemeSelector';
 
-export default function Header({ isLive, setIsLive, postCount, activeTab, setActiveTab, themeMode, onThemeChange, effectiveTheme }) {
+export default function Header({ postCount, activeTab, setActiveTab, themeMode, onThemeChange, effectiveTheme }) {
   return (
     <header className="brand-header">
       <div className="header-container">
@@ -13,7 +13,7 @@ export default function Header({ isLive, setIsLive, postCount, activeTab, setAct
           </div>
           <div>
             <div className="brand-title">
-              Verifi<span>News</span> <span className="beta-tag">AI REAL-TIME</span>
+              Verifi<span>News</span> <span className="beta-tag">AI VERIFIER</span>
             </div>
             <p className="brand-subtitle">Social Media Source Origin & Fake News Verification System</p>
           </div>
@@ -31,7 +31,7 @@ export default function Header({ isLive, setIsLive, postCount, activeTab, setAct
             className={`nav-btn ${activeTab === 'feed' ? 'active' : ''}`}
             onClick={() => setActiveTab('feed')}
           >
-            <Radio size={16} /> Live Stream ({postCount})
+            <MessageSquare size={16} /> Tracked Threads ({postCount})
           </button>
           <button 
             className={`nav-btn ${activeTab === 'analytics' ? 'active' : ''}`}
@@ -47,22 +47,13 @@ export default function Header({ isLive, setIsLive, postCount, activeTab, setAct
           </button>
         </nav>
 
-        {/* Live Stream Controller Indicator & Theme Selector */}
+        {/* Theme Selector */}
         <div className="header-actions">
           <ThemeSelector 
             themeMode={themeMode} 
             onThemeChange={onThemeChange} 
             effectiveTheme={effectiveTheme} 
           />
-
-          <button 
-            className={`live-toggle-btn ${isLive ? 'live-active' : 'live-paused'}`}
-            onClick={() => setIsLive(!isLive)}
-            title={isLive ? "Pause real-time stream" : "Resume real-time stream"}
-          >
-            <span className={`pulse-dot ${isLive ? 'active' : ''}`}></span>
-            {isLive ? "MONITORING LIVE" : "STREAM PAUSED"}
-          </button>
         </div>
       </div>
     </header>

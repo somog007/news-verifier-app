@@ -228,6 +228,11 @@ Keep "trace" and "sources" to at most 5 items each. If origin cannot be determin
 
       setResult(parsed);
 
+      if (onAddPost && typeof onAddPost === 'function') {
+        const fullPost = analyzeClaim(text, country);
+        onAddPost(fullPost);
+      }
+
       try {
         await safeStorage.set(key, JSON.stringify(parsed));
       } catch {
