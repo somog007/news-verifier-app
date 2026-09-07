@@ -97,12 +97,17 @@ export default function App() {
     
     // Simulate real-time wire scanning delay
     setTimeout(() => {
-      const result = analyzeClaim(claimText);
-      if (result) {
-        handleAddThread(result);
-        setSelectedPost(result); // Auto open trace modal for inspected claim!
+      try {
+        const result = analyzeClaim(claimText);
+        if (result) {
+          handleAddThread(result);
+          setSelectedPost(result); // Auto open trace modal for inspected claim!
+        }
+      } catch (err) {
+        console.error("Claim verification error:", err);
+      } finally {
+        setIsScanning(false);
       }
-      setIsScanning(false);
     }, 900);
   };
 

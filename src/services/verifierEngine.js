@@ -215,7 +215,7 @@ export function analyzeClaim(inputText, country = "Any") {
 
   // Determine topic category dynamically
   let topic = "General News";
-  if (lowerText.includes("bank") || lowerText.includes("naira") || lower.includes("rand") || lower.includes("cedi") || lower.includes("shilling") || lower.includes("finance") || lower.includes("tax")) {
+  if (lowerText.includes("bank") || lowerText.includes("naira") || lowerText.includes("rand") || lowerText.includes("cedi") || lowerText.includes("shilling") || lowerText.includes("finance") || lowerText.includes("tax")) {
     topic = "Finance & Economy";
   } else if (lowerText.includes("election") || lowerText.includes("president") || lowerText.includes("governor") || lowerText.includes("court") || lowerText.includes("vote")) {
     topic = "Politics & Governance";
