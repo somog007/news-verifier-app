@@ -1,5 +1,5 @@
 // ThemeSelector.jsx - Dark, Light, and System Theme Switcher
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Sun, Moon, Monitor, Check, ChevronDown } from 'lucide-react';
 
 export default function ThemeSelector({ themeMode, onThemeChange, effectiveTheme }) {

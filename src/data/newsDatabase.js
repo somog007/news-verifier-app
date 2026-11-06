@@ -1,4 +1,4 @@
-// newsDatabase.js - Initial social posts feed, African & global news wires, and simulated stream pool
+// newsDatabase.js - Curated example threads and the trusted news-wire / fact-checker registry
 
 export const INITIAL_POSTS = [
   {
@@ -14,7 +14,7 @@ export const INITIAL_POSTS = [
     region: "West Africa",
     country: "Nigeria",
     content: "FACT CHECK: Central Bank of Nigeria (CBN) refutes viral WhatsApp message claiming old ₦500 and ₦1000 banknotes will cease being legal tender by end of the month.",
-    timestamp: "3 mins ago",
+    curated: true,
     rawTimestamp: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
     metrics: { shares: "12.4K", likes: "34.1K", comments: "1.8K" },
     verdict: "FAKE",
@@ -24,7 +24,7 @@ export const INITIAL_POSTS = [
     originTrace: {
       firstSeen: "2026-09-02 18:00:00 UTC",
       originalPublisher: "Viral WhatsApp Broadcast Audio",
-      originalUrl: "https://dubawa.org/fact-check-cbn-banknote-deadline",
+      originalUrl: "https://dubawa.org/?s=CBN+banknotes",
       timeline: [
         { time: "18:00 UTC", event: "Audio clip claiming banknote expiration circulated on WhatsApp", type: "fake_origin", source: "WhatsApp Audio" },
         { time: "19:30 UTC", event: "Cross-posted to X and Facebook community groups", type: "social", source: "Social Feeds" },
@@ -46,9 +46,9 @@ export const INITIAL_POSTS = [
       ]
     },
     corroboratingSources: [
-      { name: "Dubawa West Africa Fact Check", url: "https://dubawa.org/fact-check-cbn-banknotes", credibility: 98, type: "African Fact Checker", status: "DEBUNKED" },
-      { name: "News Agency of Nigeria (NAN)", url: "https://nannews.ng/cbn-banknotes-statement", credibility: 96, type: "National News Wire", status: "OFFICIAL RELEASE" },
-      { name: "Central Bank of Nigeria Official", url: "https://cbn.gov.ng", credibility: 99, type: "Central Bank", status: "CONFIRMED" }
+      { name: "Dubawa West Africa Fact Check", url: "https://dubawa.org/?s=CBN+banknotes", credibility: 98, type: "African Fact Checker", status: "DEBUNKED" },
+      { name: "News Agency of Nigeria (NAN)", url: "https://nannews.ng/?s=CBN+banknotes", credibility: 96, type: "National News Wire", status: "OFFICIAL RELEASE" },
+      { name: "Central Bank of Nigeria Official", url: "https://www.cbn.gov.ng", credibility: 99, type: "Central Bank", status: "CONFIRMED" }
     ],
     signals: {
       domainAuthority: 97,
@@ -70,7 +70,7 @@ export const INITIAL_POSTS = [
     region: "East Africa",
     country: "Kenya",
     content: "ALERT: Viral Facebook post claiming Kenya Ministry of Education is giving free solar laptops to all secondary school students is FAKE. Link leads to phishing scam.",
-    timestamp: "12 mins ago",
+    curated: true,
     rawTimestamp: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
     metrics: { shares: "6.2K", likes: "15.8K", comments: "920" },
     verdict: "FAKE",
@@ -80,7 +80,7 @@ export const INITIAL_POSTS = [
     originTrace: {
       firstSeen: "2026-09-02 14:00:00 UTC",
       originalPublisher: "Phishing Site (free-laptop-gov.ke-promo.xyz)",
-      originalUrl: "https://pesacheck.org/fake-kenya-laptop-giveaway",
+      originalUrl: "https://pesacheck.org/search?q=laptop",
       timeline: [
         { time: "14:00 UTC", event: "Phishing site created on suspicious domain", type: "fake_origin", source: "Phishing Node" },
         { time: "15:30 UTC", event: "Shared across Facebook groups and Telegram channels", type: "social", source: "Social Groups" },
@@ -101,7 +101,7 @@ export const INITIAL_POSTS = [
       ]
     },
     corroboratingSources: [
-      { name: "PesaCheck East Africa", url: "https://pesacheck.org/fake-laptop-giveaway", credibility: 98, type: "African Fact Checker", status: "PHISHING WARNED" },
+      { name: "PesaCheck East Africa", url: "https://pesacheck.org/search?q=laptop", credibility: 98, type: "African Fact Checker", status: "PHISHING WARNED" },
       { name: "Nation Africa News", url: "https://nation.africa/kenya", credibility: 96, type: "Regional News Wire", status: "CORROBORATED" }
     ],
     signals: {
@@ -124,7 +124,7 @@ export const INITIAL_POSTS = [
     region: "Southern Africa",
     country: "South Africa",
     content: "BREAKING: South African Reserve Bank (SARB) keeps benchmark repo rate unchanged at 8.25% as CPI inflation moderates to 4.6%.",
-    timestamp: "25 mins ago",
+    curated: true,
     rawTimestamp: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
     metrics: { shares: "14.1K", likes: "42.0K", comments: "1.1K" },
     verdict: "VERIFIED",
@@ -134,7 +134,7 @@ export const INITIAL_POSTS = [
     originTrace: {
       firstSeen: "2026-09-03 13:00:00 UTC",
       originalPublisher: "SARB MPC Live Press Conference, Pretoria",
-      originalUrl: "https://sabcnews.com/sarb-repo-rate-decision-2026",
+      originalUrl: "https://www.sabcnews.com/sabcnews/?s=repo+rate",
       timeline: [
         { time: "13:00 UTC", event: "SARB Governor delivers live MPC statement", type: "primary", source: "SARB Press Desk" },
         { time: "13:10 UTC", event: "SABC News & Reuters issue direct wire report", type: "wire", source: "SABC / Reuters" }
@@ -153,9 +153,9 @@ export const INITIAL_POSTS = [
       ]
     },
     corroboratingSources: [
-      { name: "SABC News Official", url: "https://sabcnews.com/sarb-repo-rate", credibility: 97, type: "Public Broadcaster", status: "VERIFIED" },
-      { name: "South African Reserve Bank", url: "https://resbank.co.za", credibility: 99, type: "Central Bank", status: "OFFICIAL RELEASE" },
-      { name: "Reuters Financial Wire", url: "https://reuters.com/markets", credibility: 98, type: "Global Wire", status: "CORROBORATED" }
+      { name: "SABC News Official", url: "https://www.sabcnews.com/sabcnews/?s=repo+rate", credibility: 97, type: "Public Broadcaster", status: "VERIFIED" },
+      { name: "South African Reserve Bank", url: "https://www.resbank.co.za", credibility: 99, type: "Central Bank", status: "OFFICIAL RELEASE" },
+      { name: "Reuters Financial Wire", url: "https://www.reuters.com/markets/", credibility: 98, type: "Global Wire", status: "CORROBORATED" }
     ],
     signals: {
       domainAuthority: 98,
@@ -193,154 +193,4 @@ export const TRUSTED_DOMAINS = [
   { domain: "who.int", name: "World Health Organization", region: "Global", countries: ["Global"], score: 97, type: "International Body" },
   { domain: "nasa.gov", name: "NASA Official Portal", region: "Global", countries: ["Global", "US"], score: 99, type: "Government Agency" },
   { domain: "nature.com", name: "Nature Publishing", region: "Global", countries: ["Global"], score: 99, type: "Academic Journal" }
-];
-
-export const SIMULATED_STREAM_POOL = [
-  {
-    author: { name: "Dubawa West Africa", handle: "@DubawaNG", avatar: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=150&auto=format&fit=crop&q=80", verified: true, platform: "twitter" },
-    sourceDomain: "dubawa.org",
-    region: "West Africa",
-    country: "Nigeria",
-    content: "FACT CHECK: Nigeria Federal Ministry of Finance confirms no 10% instant tax has been imposed on mobile money transfers.",
-    topic: "Finance & Economy",
-    verdict: "FAKE",
-    trustScore: 12,
-    summary: "Ministry of Finance official release confirms viral posts misquoted standard withholding tax framework. Mobile money transfers remain exempt.",
-    originTrace: {
-      firstSeen: "Just now",
-      originalPublisher: "Viral X post by unverified account @TaxAlertsNG",
-      originalUrl: "https://dubawa.org/mobile-money-tax-fact-check",
-      timeline: [
-        { time: "Just now", event: "Misleading tweet posted by @TaxAlertsNG", type: "fake_origin", source: "Social Post" },
-        { time: "2 mins ago", event: "Dubawa issues official debunk report", type: "debunk", source: "Dubawa Wire" }
-      ]
-    },
-    originRadar: {
-      firstSeenTimestamp: "Just now",
-      initialNode: "Social Post (@TaxAlertsNG)",
-      nodeType: "Unverified Account",
-      viralStage: "Early Stage (Pre-Viral)",
-      viralRiskScore: 84,
-      preShareRecommendation: "🛑 DO NOT SHARE — Misinformation origin flagged by Dubawa West Africa.",
-      propagationPath: [
-        { stage: "1. Initial Origin Node", location: "X Account @TaxAlertsNG", note: "First posted with misleading tax headline", velocity: "Low (0-10m)" },
-        { stage: "2. Fact-Check Interception", location: "Dubawa West Africa Desk", note: "Official refutation published before viral surge", velocity: "Verified Active" }
-      ]
-    },
-    corroboratingSources: [
-      { name: "Dubawa West Africa Desk", url: "https://dubawa.org", credibility: 98, type: "African Fact Checker", status: "REFUTED" },
-      { name: "News Agency of Nigeria (NAN)", url: "https://nannews.ng", credibility: 96, type: "National News Wire", status: "OFFICIAL STATEMENT" }
-    ],
-    signals: { domainAuthority: 97, crossConsensus: "Refuted by Dubawa", manipulatedMedia: true, clickbaitScore: 88 }
-  },
-  {
-    author: { name: "Ghana News Agency (GNA)", handle: "@GNA_Ghana", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80", verified: true, platform: "twitter" },
-    sourceDomain: "gna.org.gh",
-    region: "West Africa",
-    country: "Ghana",
-    content: "Bank of Ghana expands eCedi retail digital currency pilot to over 1,500 merchants in Accra and Kumasi.",
-    topic: "Finance & Economy",
-    verdict: "VERIFIED",
-    trustScore: 96,
-    summary: "Bank of Ghana Governor confirmed phase two expansion of eCedi offline and online merchant payments in partnership with Fintech Association.",
-    originTrace: {
-      firstSeen: "5 mins ago",
-      originalPublisher: "Bank of Ghana Press Release, Accra",
-      originalUrl: "https://gna.org.gh/bank-of-ghana-ecedi-pilot",
-      timeline: [
-        { time: "5 mins ago", event: "Press release issued at Fintech Summit in Accra", type: "primary", source: "Bank of Ghana" },
-        { time: "3 mins ago", event: "GNA Wire publishes full statement", type: "wire", source: "GNA Desk" }
-      ]
-    },
-    originRadar: {
-      firstSeenTimestamp: "5 mins ago",
-      initialNode: "Bank of Ghana Press Office",
-      nodeType: "Central Bank Official Bulletin",
-      viralStage: "Official Wire Publication",
-      viralRiskScore: 12,
-      preShareRecommendation: "✅ SAFE TO SHARE — Corroborated official release from Bank of Ghana & GNA.",
-      propagationPath: [
-        { stage: "1. Initial Origin Node", location: "Accra Fintech Summit", note: "Governor speech & official release", velocity: "Official Wire" },
-        { stage: "2. National Distribution", location: "Ghana News Agency (GNA)", note: "Syndicated across West African media", velocity: "National Wire" }
-      ]
-    },
-    corroboratingSources: [
-      { name: "Ghana News Agency (GNA)", url: "https://gna.org.gh", credibility: 95, type: "National News Wire", status: "VERIFIED" },
-      { name: "Bank of Ghana Portal", url: "https://bog.gov.gh", credibility: 99, type: "Central Bank", status: "PRIMARY SOURCE" }
-    ],
-    signals: { domainAuthority: 96, crossConsensus: "Verified by BOG & GNA", manipulatedMedia: false, clickbaitScore: 12 }
-  },
-  {
-    author: { name: "Africa Check Pan-Africa", handle: "@AfricaCheck", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80", verified: true, platform: "twitter" },
-    sourceDomain: "africacheck.org",
-    region: "Pan-Africa",
-    country: "South Africa",
-    content: "NO, South African Department of Health is not hiring 50,000 community health workers via viral Facebook job link. Post is a scam.",
-    topic: "Health & Governance",
-    verdict: "FAKE",
-    trustScore: 6,
-    summary: "Health Department confirmed job recruitment post is fraudulent. Authentic vacancies are published exclusively on dpsa.gov.za and official provincial portals.",
-    originTrace: {
-      firstSeen: "8 mins ago",
-      originalPublisher: "Facebook Page 'SA Health Jobs 2026'",
-      originalUrl: "https://africacheck.org/sa-health-jobs-scam",
-      timeline: [
-        { time: "8 mins ago", event: "Fake job post shared across 40 Facebook groups", type: "fake_origin", source: "Facebook Group" },
-        { time: "4 mins ago", event: "Africa Check & SABC issue fraud warning", type: "debunk", source: "Africa Check Desk" }
-      ]
-    },
-    originRadar: {
-      firstSeenTimestamp: "8 mins ago",
-      initialNode: "Fake Facebook Page",
-      nodeType: "Recruitment Fraud Node",
-      viralStage: "Early Stage (Pre-Viral)",
-      viralRiskScore: 91,
-      preShareRecommendation: "🛑 DO NOT SHARE — Fraudulent recruitment scam flagged by Africa Check.",
-      propagationPath: [
-        { stage: "1. Initial Origin Node", location: "Unverified Facebook Page", note: "Job scam harvesting applicant data", velocity: "Low (0-15m)" },
-        { stage: "2. Interception", location: "Africa Check South Africa", note: "Verification response active before viral peak", velocity: "Verified Active" }
-      ]
-    },
-    corroboratingSources: [
-      { name: "Africa Check Bureau", url: "https://africacheck.org", credibility: 98, type: "African Fact Checker", status: "FRAUD WARNED" },
-      { name: "SABC News SA", url: "https://sabcnews.com", credibility: 96, type: "Public Broadcaster", status: "CORROBORATED" }
-    ],
-    signals: { domainAuthority: 98, crossConsensus: "Confirmed Recruitment Scam", manipulatedMedia: true, clickbaitScore: 96 }
-  },
-  {
-    author: { name: "Associated Press Wire", handle: "@AP", avatar: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=150&auto=format&fit=crop&q=80", verified: true, platform: "twitter" },
-    sourceDomain: "apnews.com",
-    region: "Global",
-    country: "Global",
-    content: "AP WIRE: World Health Organization issues global guidance on AI diagnostic integration in clinical triage procedures.",
-    topic: "Health & Technology",
-    verdict: "VERIFIED",
-    trustScore: 98,
-    summary: "WHO published new global framework establishing clinical trial and algorithmic safety standards for AI-assisted diagnostic software.",
-    originTrace: {
-      firstSeen: "10 mins ago",
-      originalPublisher: "WHO Headquarters, Geneva",
-      originalUrl: "https://apnews.com/who-ai-clinical-guidance",
-      timeline: [
-        { time: "10 mins ago", event: "Press briefing at WHO Geneva", type: "primary", source: "WHO Media Desk" },
-        { time: "7 mins ago", event: "AP & Reuters syndicate global wire release", type: "wire", source: "AP Wire" }
-      ]
-    },
-    originRadar: {
-      firstSeenTimestamp: "10 mins ago",
-      initialNode: "WHO Press Desk, Geneva",
-      nodeType: "International Organization Release",
-      viralStage: "Global Wire Syndicate",
-      viralRiskScore: 8,
-      preShareRecommendation: "✅ SAFE TO SHARE — Official WHO press release syndicated via AP Wire.",
-      propagationPath: [
-        { stage: "1. Initial Origin Node", location: "WHO Geneva Briefing", note: "Official international release", velocity: "Global Wire" }
-      ]
-    },
-    corroboratingSources: [
-      { name: "Associated Press Wire", url: "https://apnews.com", credibility: 99, type: "Global Wire", status: "VERIFIED" },
-      { name: "World Health Organization", url: "https://who.int", credibility: 97, type: "International Body", status: "PRIMARY SOURCE" }
-    ],
-    signals: { domainAuthority: 99, crossConsensus: "Verified by WHO & AP", manipulatedMedia: false, clickbaitScore: 8 }
-  }
 ];

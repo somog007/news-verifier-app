@@ -1,6 +1,5 @@
 // TimelineTrace.jsx - Visual propagation timeline path tracking original source to social media spread
-import React from 'react';
-import { GitCommit, AlertOctagon, CheckCircle2, ShieldAlert, Share2, Globe, Bot } from 'lucide-react';
+import { AlertOctagon, CheckCircle2, ShieldAlert, Share2, Globe, Bot } from 'lucide-react';
 
 export default function TimelineTrace({ trace }) {
   if (!trace || !trace.timeline) return null;
@@ -26,9 +25,10 @@ export default function TimelineTrace({ trace }) {
     <div className="timeline-trace-container">
       <div className="trace-header-card">
         <div className="origin-meta">
-          <span className="meta-title">ZERO-POINT ORIGIN</span>
+          <span className="meta-title">ORIGIN</span>
           <h4 className="meta-value">{trace.originalPublisher || "Unknown Social Seed"}</h4>
-          <span className="meta-sub">First Detected: {trace.firstSeen}</span>
+          <span className="meta-sub">First seen: {trace.firstSeen}</span>
+          {trace.originNote && <span className="meta-sub">{trace.originNote}</span>}
         </div>
         {trace.originalUrl && (
           <a 
@@ -37,13 +37,13 @@ export default function TimelineTrace({ trace }) {
             rel="noopener noreferrer" 
             className="origin-link-btn"
           >
-            Visit Original Artifact →
+            Open original →
           </a>
         )}
       </div>
 
       <div className="propagation-path">
-        <h4 className="section-subtitle">Real-Time Spread & Propagation Lineage</h4>
+        <h4 className="section-subtitle">Spread & verification timeline</h4>
         <div className="timeline-line">
           {trace.timeline.map((item, index) => (
             <div key={index} className={`timeline-item type-${item.type}`}>
