@@ -1,0 +1,16 @@
+{
+  "name": "verifinews-proxy",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Server-side proxy that researches claims with the Claude API so the API key never reaches the browser",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env verify-proxy.mjs"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0"
+  }
+}

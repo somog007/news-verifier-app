@@ -1,8 +1,9 @@
 // LiveFeed.jsx - Tracked News & Claim Threads Hub
-import React, { useState } from 'react';
-import { Filter, MessageSquare, RefreshCw, ShieldCheck, ShieldAlert, AlertTriangle, Sparkles, Globe, Sliders, Check } from 'lucide-react';
+import { useState } from 'react';
+import { Filter, MessageSquare, RefreshCw, Globe, Sliders, Check } from 'lucide-react';
 import PostCard from './PostCard';
 import { TRUSTED_DOMAINS } from '../data/newsDatabase';
+import { VERDICT_ORDER, getVerdictMeta } from '../constants/verdicts';
 
 export default function LiveFeed({ 
   posts, 
@@ -16,14 +17,6 @@ export default function LiveFeed({
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showSourceCustomizer, setShowSourceCustomizer] = useState(false);
-
-  const REGIONS = [
-    { id: 'ALL', label: 'All Regions' },
-    { id: 'West Africa', label: '🇳🇬 🇬🇭 West Africa' },
-    { id: 'East Africa', label: '🇰🇪 🇺🇬 East Africa' },
-    { id: 'Southern Africa', label: '🇿🇦 Southern Africa' },
-    { id: 'Global', label: '🌐 Global Wires' }
-  ];
 
   const QUICK_PRESETS = [
     { label: '🌍 All Wires', sources: ['ALL'], region: 'ALL' },
@@ -168,33 +161,19 @@ export default function LiveFeed({
             All Threads ({posts.length})
           </button>
 
-          <button 
-            className={`filter-chip verified-chip ${filterCategory === 'VERIFIED' ? 'active' : ''}`}
-            onClick={() => setFilterCategory('VERIFIED')}
-          >
-            <ShieldCheck size={14} /> Verified Real ({posts.filter(p => p.verdict === 'VERIFIED').length})
-          </button>
-
-          <button 
-            className={`filter-chip fake-chip ${filterCategory === 'FAKE' ? 'active' : ''}`}
-            onClick={() => setFilterCategory('FAKE')}
-          >
-            <ShieldAlert size={14} /> Flagged Fake ({posts.filter(p => p.verdict === 'FAKE').length})
-          </button>
-
-          <button 
-            className={`filter-chip misleading-chip ${filterCategory === 'MISLEADING' ? 'active' : ''}`}
-            onClick={() => setFilterCategory('MISLEADING')}
-          >
-            <AlertTriangle size={14} /> Misleading ({posts.filter(p => p.verdict === 'MISLEADING').length})
-          </button>
-
-          <button 
-            className={`filter-chip satire-chip ${filterCategory === 'SATIRE' ? 'active' : ''}`}
-            onClick={() => setFilterCategory('SATIRE')}
-          >
-            <Sparkles size={14} /> Satire ({posts.filter(p => p.verdict === 'SATIRE').length})
-          </button>
+          {VERDICT_ORDER.map((verdict) => {
+            const meta = getVerdictMeta(verdict);
+            const count = posts.filter((p) => p.verdict === verdict).length;
+            return (
+              <button
+                key={verdict}
+                className={`filter-chip ${meta.key}-chip ${filterCategory === verdict ? 'active' : ''}`}
+                onClick={() => setFilterCategory(verdict)}
+              >
+                <meta.Icon size={14} /> {meta.label} ({count})
+              </button>
+            );
+          })}
         </div>
       </div>
 

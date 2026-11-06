@@ -1,145 +1,144 @@
-// App.jsx - Main Application entry point & state orchestrator
-import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import ClaimInputBar from './components/ClaimInputBar';
-import LiveFeed from './components/LiveFeed';
-import SourceTraceModal from './components/SourceTraceModal';
-import AnalyticsDashboard from './components/AnalyticsDashboard';
-import NewsVerifier from './components/NewsVerifier';
-import { INITIAL_POSTS, TRUSTED_DOMAINS } from './data/newsDatabase';
-import { analyzeClaim } from './services/verifierEngine';
-import './App.css';
+// App.jsx - Application shell: navigation, verification flow and shared state
+import { useState } from "react";
+import Header from "./components/Header";
+import LiveFeed from "./components/LiveFeed";
+import SourceTraceModal from "./components/SourceTraceModal";
+import AnalyticsDashboard from "./components/AnalyticsDashboard";
+import NewsVerifier from "./components/NewsVerifier";
+import TrustedWiresGrid from "./components/TrustedWiresGrid";
+import ConnectionBanner from "./components/ConnectionBanner";
+import NewsFeedPanel from "./components/NewsFeedPanel";
+import { useTheme } from "./hooks/useTheme";
+import { useOnlineStatus } from "./hooks/useOnlineStatus";
+import { useNewsFeed } from "./hooks/useNewsFeed";
+import { useTrackedThreads } from "./hooks/useTrackedThreads";
+import { verifyClaim } from "./services/verificationService";
+import "./App.css";
 
 export default function App() {
-  const [posts, setPosts] = useState(INITIAL_POSTS);
-  const [activeTab, setActiveTab] = useState('verifier'); // 'verifier' | 'feed' | 'analytics' | 'sources'
-  const [filterCategory, setFilterCategory] = useState('ALL');
+  const { themeMode, effectiveTheme, setThemeMode } = useTheme();
+  const { threads, userThreads, upsertThread, findPreviousCheck, clearUserThreads } = useTrackedThreads();
+  const { online, justReconnected } = useOnlineStatus();
+
+  const [activeTab, setActiveTab] = useState("verifier"); // 'verifier' | 'feed' | 'analytics' | 'sources'
   const [selectedPost, setSelectedPost] = useState(null);
-  const [isScanning, setIsScanning] = useState(false);
-  const [verifierClaim, setVerifierClaim] = useState('');
 
-  // User Source & Region Selection State
-  const [selectedSources, setSelectedSources] = useState(['ALL']);
-  const [selectedRegion, setSelectedRegion] = useState('ALL');
+  // Verification state (claim and country are shared by the studio and the newsfeed)
+  const [claim, setClaim] = useState("");
+  const [country, setCountry] = useState("Any");
+  const [isChecking, setIsChecking] = useState(false);
+  const [currentReport, setCurrentReport] = useState(null);
+  const [notice, setNotice] = useState(null);
+  const [fromHistory, setFromHistory] = useState(false);
 
-  // Theme Management State (system | light | dark)
-  const [themeMode, setThemeMode] = useState(() => {
+  const newsFeed = useNewsFeed(country, online);
+
+  // Feed filters live here so they survive tab switches
+  const [filterCategory, setFilterCategory] = useState("ALL");
+  const [selectedSources, setSelectedSources] = useState(["ALL"]);
+  const [selectedRegion, setSelectedRegion] = useState("ALL");
+
+  const runCheck = async (claim, country) => {
+    setIsChecking(true);
+    setNotice(null);
     try {
-      return localStorage.getItem('verifinews-theme') || 'system';
-    } catch {
-      return 'system';
-    }
-  });
-
-  const [effectiveTheme, setEffectiveTheme] = useState('light');
-
-  // Handle system color scheme media query and dynamic theme application
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const resolveAndApplyTheme = () => {
-      let resolved = themeMode;
-      if (themeMode === 'system') {
-        resolved = mediaQuery.matches ? 'dark' : 'light';
+      const { report, notice: serviceNotice } = await verifyClaim(claim, country, {
+        online,
+        savedHeadlines: newsFeed.savedHeadlines,
+      });
+      if (report) {
+        upsertThread(report);
+        setCurrentReport(report);
+        setFromHistory(false);
+        setNotice(serviceNotice);
       }
-      setEffectiveTheme(resolved);
-      document.documentElement.setAttribute('data-theme', resolved);
-    };
-
-    resolveAndApplyTheme();
-
-    const handleSystemChange = () => {
-      if (themeMode === 'system') {
-        resolveAndApplyTheme();
-      }
-    };
-
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleSystemChange);
-    } else if (mediaQuery.addListener) {
-      mediaQuery.addListener(handleSystemChange);
-    }
-
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleSystemChange);
-      } else if (mediaQuery.removeListener) {
-        mediaQuery.removeListener(handleSystemChange);
-      }
-    };
-  }, [themeMode]);
-
-  const handleThemeChange = (newMode) => {
-    setThemeMode(newMode);
-    try {
-      localStorage.setItem('verifinews-theme', newMode);
-    } catch {
-      // best-effort
+    } catch (err) {
+      console.error("Claim verification error:", err);
+      setNotice("Something went wrong while checking this claim. Please try again.");
+    } finally {
+      setIsChecking(false);
     }
   };
 
-  // Add searched news or claim thread to tracked threads list
-  const handleAddThread = (newPost) => {
-    if (!newPost) return;
-    setPosts(prev => {
-      const exists = prev.some(p => p.content.trim().toLowerCase() === newPost.content.trim().toLowerCase());
-      if (exists) {
-        return prev.map(p => p.content.trim().toLowerCase() === newPost.content.trim().toLowerCase() ? newPost : p);
-      }
-      return [newPost, ...prev];
-    });
+  // Re-use an earlier result for the same claim instead of checking it again,
+  // unless it was only pattern-checked (e.g. offline) and live sources are now available.
+  const handleVerify = (claim, country) => {
+    const previous = findPreviousCheck(claim, country);
+    if (previous && !(online && (previous.checkedOffline || previous.method === "heuristic"))) {
+      handleOpenHistory(previous);
+      return;
+    }
+    runCheck(claim, country);
   };
 
-  // Handle manual user claim / URL verification
-  const handleVerifyClaim = (claimText) => {
-    setIsScanning(true);
-    setVerifierClaim(claimText);
-    
-    // Simulate real-time wire scanning delay
-    setTimeout(() => {
-      try {
-        const result = analyzeClaim(claimText);
-        if (result) {
-          handleAddThread(result);
-          setSelectedPost(result); // Auto open trace modal for inspected claim!
-        }
-      } catch (err) {
-        console.error("Claim verification error:", err);
-      } finally {
-        setIsScanning(false);
-      }
-    }, 900);
+  // "Check" on a headline: put it in the studio and check it straight away.
+  const handleCheckHeadline = (title) => {
+    setClaim(title);
+    handleVerify(title, country);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleRecheck = (report) => runCheck(report.content, report.country || "Any");
+
+  const handleOpenHistory = (report) => {
+    setCurrentReport(report);
+    setFromHistory(true);
+    setNotice(null);
   };
 
   return (
     <div className="app-layout">
-      {/* Top Header Navigation */}
-      <Header 
-        postCount={posts.length} 
+      <Header
+        postCount={threads.length}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         themeMode={themeMode}
-        onThemeChange={handleThemeChange}
+        onThemeChange={setThemeMode}
         effectiveTheme={effectiveTheme}
       />
 
-      <main className="main-content-container">
-        {/* Real-time claim search & URL verifier bar */}
-        <ClaimInputBar 
-          onVerifyClaim={handleVerifyClaim} 
-          isScanning={isScanning} 
-        />
+      <ConnectionBanner online={online} justReconnected={justReconnected} />
 
-        {/* Tab 0: Editorial Fact-Check Studio (NewsVerifier) */}
-        {activeTab === 'verifier' && (
-          <NewsVerifier initialClaim={verifierClaim} onAddPost={handleAddThread} />
+      <main className="main-content-container">
+        {activeTab === "verifier" && (
+          <div className="studio-layout">
+            <NewsVerifier
+              claim={claim}
+              setClaim={setClaim}
+              country={country}
+              setCountry={setCountry}
+              savedHeadlineCount={newsFeed.savedHeadlines.length}
+              onVerify={handleVerify}
+              onRecheck={handleRecheck}
+              isChecking={isChecking}
+              online={online}
+              report={currentReport}
+              notice={notice}
+              fromHistory={fromHistory}
+              history={userThreads}
+              onOpenHistory={handleOpenHistory}
+              onClearHistory={clearUserThreads}
+              onOpenFullReport={setSelectedPost}
+            />
+            <NewsFeedPanel
+              items={newsFeed.items}
+              fetchedAt={newsFeed.fetchedAt}
+              savedCount={newsFeed.savedHeadlines.length}
+              loading={newsFeed.loading}
+              error={newsFeed.error}
+              online={online}
+              country={country}
+              onRefresh={newsFeed.refresh}
+              onCheck={handleCheckHeadline}
+              isChecking={isChecking}
+            />
+          </div>
         )}
 
-        {/* Tab 1: Tracked Threads Feed */}
-        {activeTab === 'feed' && (
-          <LiveFeed 
-            posts={posts} 
-            onSelectPost={setSelectedPost} 
+        {activeTab === "feed" && (
+          <LiveFeed
+            posts={threads}
+            onSelectPost={setSelectedPost}
             filterCategory={filterCategory}
             setFilterCategory={setFilterCategory}
             selectedSources={selectedSources}
@@ -149,45 +148,26 @@ export default function App() {
           />
         )}
 
-        {/* Tab 2: Analytics & Trends */}
-        {activeTab === 'analytics' && (
-          <AnalyticsDashboard posts={posts} />
-        )}
+        {activeTab === "analytics" && <AnalyticsDashboard posts={threads} />}
 
-        {/* Tab 3: Trusted Wires Registry */}
-        {activeTab === 'sources' && (
-          <div className="panel-card full-width" style={{ marginTop: '1.5rem' }}>
+        {activeTab === "sources" && (
+          <div className="panel-card full-width" style={{ marginTop: "1.5rem" }}>
             <h3 className="section-title">Verified News Wire Outlets & Fact-Check Registries</h3>
-            <p className="section-desc">These primary international wires and African fact-checking institutions form the baseline reference engine for VerifiNews source tracking.</p>
-            
-            <div className="wire-grid" style={{ marginTop: '1.5rem' }}>
-              {TRUSTED_DOMAINS.map((domain, i) => (
-                <div key={i} className="wire-card">
-                  <div className="wire-header">
-                    <span className="wire-name">{domain.name}</span>
-                    <span className="wire-score">{domain.score}% Trust</span>
-                  </div>
-                  <div className="wire-sub">
-                    <span>{domain.domain}</span> • <span className="wire-type">{domain.type}</span>
-                  </div>
-                </div>
-              ))}
+            <p className="section-desc">
+              These international wires and African fact-checking institutions are the reference set VerifiNews points
+              you to when checking a claim.
+            </p>
+            <div style={{ marginTop: "1.5rem" }}>
+              <TrustedWiresGrid />
             </div>
           </div>
         )}
       </main>
 
-      {/* Source Trace & Provenance Modal Drawer */}
-      {selectedPost && (
-        <SourceTraceModal 
-          post={selectedPost} 
-          onClose={() => setSelectedPost(null)} 
-        />
-      )}
+      {selectedPost && <SourceTraceModal post={selectedPost} onClose={() => setSelectedPost(null)} />}
 
-      {/* Footer */}
       <footer className="app-footer">
-        <p>VerifiNews Engine • Social Media Fake News Detection & Source Provenance System</p>
+        <p>VerifiNews • Check claims before you share them. Results are guidance, not a substitute for professional fact-checking.</p>
       </footer>
     </div>
   );
