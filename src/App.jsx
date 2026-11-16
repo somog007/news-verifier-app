@@ -13,7 +13,7 @@ import { useTheme } from "./hooks/useTheme";
 import { useOnlineStatus } from "./hooks/useOnlineStatus";
 import { useNewsFeed } from "./hooks/useNewsFeed";
 import { usePwa } from "./hooks/usePwa";
-import { useTrackedThreads } from "./hooks/useTrackedThreads";
+import { canReuseCheck, useTrackedThreads } from "./hooks/useTrackedThreads";
 import { verifyClaim } from "./services/verificationService";
 import "./App.css";
 
@@ -63,11 +63,11 @@ export default function App() {
     }
   };
 
-  // Re-use an earlier result for the same claim instead of checking it again,
-  // unless it was only pattern-checked (e.g. offline) and live sources are now available.
+  // Re-use a recent earlier result for the same claim instead of checking it again
+  // (see canReuseCheck: older or offline-only results are checked again when online).
   const handleVerify = (claim, country) => {
     const previous = findPreviousCheck(claim, country);
-    if (previous && !(online && (previous.checkedOffline || previous.method === "heuristic"))) {
+    if (canReuseCheck(previous, online)) {
       handleOpenHistory(previous);
       return;
     }

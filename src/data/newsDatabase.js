@@ -1,4 +1,5 @@
-// newsDatabase.js - Curated example threads and the trusted news-wire / fact-checker registry
+// newsDatabase.js - Curated example threads and the trusted news-wire / fact-checker registry.
+// Examples keep the fixed date the story happened, so they never look like fresh checks.
 
 export const INITIAL_POSTS = [
   {
@@ -15,7 +16,7 @@ export const INITIAL_POSTS = [
     country: "Nigeria",
     content: "FACT CHECK: Central Bank of Nigeria (CBN) refutes viral WhatsApp message claiming old ₦500 and ₦1000 banknotes will cease being legal tender by end of the month.",
     curated: true,
-    rawTimestamp: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
+    rawTimestamp: "2026-09-02T18:00:00Z",
     metrics: { shares: "12.4K", likes: "34.1K", comments: "1.8K" },
     verdict: "FAKE",
     trustScore: 8,
@@ -71,7 +72,7 @@ export const INITIAL_POSTS = [
     country: "Kenya",
     content: "ALERT: Viral Facebook post claiming Kenya Ministry of Education is giving free solar laptops to all secondary school students is FAKE. Link leads to phishing scam.",
     curated: true,
-    rawTimestamp: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
+    rawTimestamp: "2026-09-02T14:00:00Z",
     metrics: { shares: "6.2K", likes: "15.8K", comments: "920" },
     verdict: "FAKE",
     trustScore: 5,
@@ -125,7 +126,7 @@ export const INITIAL_POSTS = [
     country: "South Africa",
     content: "BREAKING: South African Reserve Bank (SARB) keeps benchmark repo rate unchanged at 8.25% as CPI inflation moderates to 4.6%.",
     curated: true,
-    rawTimestamp: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+    rawTimestamp: "2026-09-03T13:00:00Z",
     metrics: { shares: "14.1K", likes: "42.0K", comments: "1.1K" },
     verdict: "VERIFIED",
     trustScore: 97,

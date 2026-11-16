@@ -18,5 +18,5 @@ export function formatRelative(isoString, now = Date.now()) {
       return `${n} ${unit}${n === 1 ? "" : "s"} ago`;
     }
   }
-  return new Date(then).toLocaleDateString();
+  return new Date(then).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 }
