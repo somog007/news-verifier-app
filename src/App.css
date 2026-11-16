@@ -1397,3 +1397,61 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (min-width: 1100px) {
   .nv-feed-jump { display: none; }
 }
+
+/* Installable app: header install button and the update / saved-offline toast */
+.install-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--text-main);
+  background: var(--text-main);
+  color: var(--bg-dark);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.install-btn:hover { opacity: 0.9; }
+.install-btn:focus-visible,
+.app-toast button:focus-visible { outline: 2px solid var(--accent-blue); outline-offset: 2px; }
+
+.app-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: max-content;
+  max-width: calc(100vw - 2rem);
+  padding: 0.65rem 0.75rem 0.65rem 1rem;
+  border-radius: 10px;
+  background: var(--text-main);
+  color: var(--bg-dark);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  font-size: 0.85rem;
+}
+.app-toast svg { flex-shrink: 0; }
+.app-toast-action {
+  border: 0;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  background: var(--bg-dark);
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.app-toast-close {
+  display: inline-flex;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.75;
+  padding: 0.25rem;
+  cursor: pointer;
+}
+.app-toast-close:hover { opacity: 1; }

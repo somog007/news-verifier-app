@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { matchHeadlines, mergeHeadlines } from "./newsFeed";
-import { checkOffline } from "./verificationService";
+import { checkOffline, verifyClaim } from "./verificationService";
 
 const NOW = Date.parse("2026-10-31T12:00:00Z");
 const headline = (title, extra = {}) => ({ title, url: `https://example.com/${encodeURIComponent(title)}`, publishedAt: "2026-10-31T08:00:00Z", ...extra });
@@ -48,5 +48,17 @@ describe("checkOffline", () => {
   it("falls back to a pattern check when nothing is saved", () => {
     const { report } = checkOffline("Fuel price rise announced", "Any", []);
     expect(report.method).toBe("heuristic");
+  });
+});
+
+describe("connected but no sources reachable", () => {
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("falls back to the saved newsfeed", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => Promise.reject(new TypeError("Failed to fetch"))));
+    const { report, notice } = await verifyClaim("CBN revokes microfinance bank licences", "Nigeria", { online: true, savedHeadlines: SAVED });
+    expect(report.method).toBe("saved_feed");
+    expect(report.checkedOffline).toBe(true);
+    expect(notice).toMatch(/couldn't reach any online sources\. This result uses the headlines saved on this device/);
   });
 });

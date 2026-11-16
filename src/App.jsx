@@ -8,9 +8,11 @@ import NewsVerifier from "./components/NewsVerifier";
 import TrustedWiresGrid from "./components/TrustedWiresGrid";
 import ConnectionBanner from "./components/ConnectionBanner";
 import NewsFeedPanel from "./components/NewsFeedPanel";
+import AppUpdateToast from "./components/AppUpdateToast";
 import { useTheme } from "./hooks/useTheme";
 import { useOnlineStatus } from "./hooks/useOnlineStatus";
 import { useNewsFeed } from "./hooks/useNewsFeed";
+import { usePwa } from "./hooks/usePwa";
 import { useTrackedThreads } from "./hooks/useTrackedThreads";
 import { verifyClaim } from "./services/verificationService";
 import "./App.css";
@@ -19,6 +21,7 @@ export default function App() {
   const { themeMode, effectiveTheme, setThemeMode } = useTheme();
   const { threads, userThreads, upsertThread, findPreviousCheck, clearUserThreads } = useTrackedThreads();
   const { online, justReconnected } = useOnlineStatus();
+  const pwa = usePwa();
 
   const [activeTab, setActiveTab] = useState("verifier"); // 'verifier' | 'feed' | 'analytics' | 'sources'
   const [selectedPost, setSelectedPost] = useState(null);
@@ -95,6 +98,8 @@ export default function App() {
         themeMode={themeMode}
         onThemeChange={setThemeMode}
         effectiveTheme={effectiveTheme}
+        canInstall={pwa.canInstall}
+        onInstall={pwa.install}
       />
 
       <ConnectionBanner online={online} justReconnected={justReconnected} />
@@ -163,6 +168,8 @@ export default function App() {
           </div>
         )}
       </main>
+
+      <AppUpdateToast updateReady={pwa.updateReady} onUpdate={pwa.applyUpdate} offlineReady={pwa.offlineReady} />
 
       {selectedPost && <SourceTraceModal post={selectedPost} onClose={() => setSelectedPost(null)} />}
 

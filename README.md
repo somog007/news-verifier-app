@@ -25,12 +25,22 @@ The studio shows **Latest headlines** for the selected country: beside the check
 
 When offline, claims are compared against the saved headlines: a match from two trusted outlets can still confirm a claim, while no match only means "not in the saved feed", never "false". Offline results are always marked as such.
 
+### Install the app (opens without internet)
+
+VerifiNews is an installable web app (PWA). On the first visit it saves itself on the device, then it opens with no connection at all, together with the saved newsfeed.
+
+- **Android (Chrome, Edge, Samsung Internet):** tap **Install app** in the header, or the browser menu → **Install app** / **Add to Home screen**.
+- **iPhone/iPad (Safari):** Share → **Add to Home Screen**.
+- **Desktop (Chrome, Edge):** **Install app** in the header, or the install icon in the address bar.
+
+After a deploy, open copies show "A new version of VerifiNews is ready" with a **Reload** button. Only the app itself is saved this way. Checks still go to live sources whenever the device is online.
+
 ### Internet connection
 
 Correct results need live sources, so the app watches the connection:
 - When offline, a banner asks the user to connect, and pressing **Check** asks for confirmation before running a limited offline check.
 - Offline results are marked "Checked without internet". Once the connection returns, the user is told and can **re-check with live sources** in one click. Re-submitting the claim online re-checks it automatically.
-- If the device reports being online but no source can be reached, the user is asked to check their connection.
+- If the device reports being online but no source can be reached (no data left, or Wi-Fi without internet), the claim is checked against the saved newsfeed and the user is asked to check their connection.
 
 ## Setup
 
@@ -83,17 +93,22 @@ src/
   data/newsDatabase.js       Curated example threads + trusted wire registry
   hooks/                     useTheme, useTrackedThreads, useOnlineStatus, useNewsFeed
   lib/                       text matching, relative time, safe storage helpers
+  pwa/                       sw.js (service worker), swPlugin.js (writes dist/sw.js), register.js
   services/
     verifierEngine.js        Content classification, link analysis, pattern screening
     onlineSources.js         Live fact-checks, news, Wikipedia + merging evidence
     newsFeed.js              Newsfeed headlines, saved on the device for offline checks
     verificationService.js   The pipeline: classify -> research -> evidence
+public/                      manifest.webmanifest, favicon.svg, icons/ (app icons)
+scripts/make-icons.mjs       Re-renders the icons with headless Chrome or Edge
 server/verify-proxy.mjs      /api/headlines, /api/evidence, /api/verify (keeps keys server-side)
 ```
 
 ## Deployment
 
 On every push to `main`, `.github/workflows/deploy.yml` runs lint, tests and the build, then publishes `dist/` to GitHub Pages. In repository Settings → Pages, set the source to **GitHub Actions**.
+
+The service worker is only registered in production builds. To try the installed app and offline start locally, run `npm run build` then `npm run preview` and open http://localhost:4173/news-verifier-app/.
 
 ## Limitations
 

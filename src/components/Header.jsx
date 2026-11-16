@@ -1,8 +1,8 @@
 // Header.jsx - Application top bar & theme switcher
-import { ShieldCheck, MessageSquare, Activity, Layers, Search } from 'lucide-react';
+import { ShieldCheck, MessageSquare, Activity, Layers, Search, Download } from 'lucide-react';
 import ThemeSelector from './ThemeSelector';
 
-export default function Header({ postCount, activeTab, setActiveTab, themeMode, onThemeChange, effectiveTheme }) {
+export default function Header({ postCount, activeTab, setActiveTab, themeMode, onThemeChange, effectiveTheme, canInstall, onInstall }) {
   return (
     <header className="brand-header">
       <div className="header-container">
@@ -52,6 +52,11 @@ export default function Header({ postCount, activeTab, setActiveTab, themeMode, 
 
         {/* Theme Selector */}
         <div className="header-actions">
+          {canInstall && (
+            <button type="button" className="install-btn" onClick={onInstall} title="Add VerifiNews to your home screen or desktop. It opens without internet.">
+              <Download size={14} /> Install app
+            </button>
+          )}
           <ThemeSelector 
             themeMode={themeMode} 
             onThemeChange={onThemeChange} 

@@ -179,10 +179,13 @@ export async function verifyClaim(claim, country = "Any", { online = true, saved
   const evidence = await evidencePromise;
   base = base || analyzeClaim(text, country);
 
+  // Connected but nothing loads (no data, or Wi-Fi without internet): use the saved newsfeed.
   if (!evidence.reachable && base.method !== "ai") {
+    const { report } = checkOffline(text, country, savedHeadlines);
+    const saved = savedHeadlines.length > 0 ? " This result uses the headlines saved on this device." : "";
     return {
-      report: { ...base, checkedOffline: true },
-      notice: "We couldn't reach any online sources. Check your internet connection and try again for results based on live sources.",
+      report,
+      notice: `We couldn't reach any online sources.${saved} Check your internet connection and try again for results based on live sources.`,
     };
   }
   return { report: applyEvidence(base, evidence), notice };

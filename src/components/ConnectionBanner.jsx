@@ -10,7 +10,7 @@ export default function ConnectionBanner({ online, justReconnected }) {
       <span>
         {online
           ? "You're back online. Checks now use live fact-checkers, news and reference sources."
-          : "You're offline. Please connect to the internet to get correct, up-to-date information. Offline checks only look for warning patterns."}
+          : "You're offline. Please connect to the internet to get correct, up-to-date information. Offline checks only use warning patterns and the headlines saved on this device."}
       </span>
     </div>
   );
