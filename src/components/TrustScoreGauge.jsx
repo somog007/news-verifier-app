@@ -1,7 +1,6 @@
 // TrustScoreGauge.jsx - Circular score gauge visualization component
-import React from 'react';
 
-export default function TrustScoreGauge({ score, verdict }) {
+export default function TrustScoreGauge({ score }) {
   // Map score 0-100 to stroke offset
   const radius = 38;
   const circumference = 2 * Math.PI * radius;

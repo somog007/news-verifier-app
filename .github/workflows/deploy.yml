@@ -27,17 +27,28 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
       - name: Build project
         run: npm run build
+        env:
+          # Set this repository variable to your deployed proxy URL to enable AI research mode
+          VITE_VERIFY_API_URL: ${{ vars.VITE_VERIFY_API_URL }}
+          VITE_EVIDENCE_API_URL: ${{ vars.VITE_EVIDENCE_API_URL }}
+          VITE_FACTCHECK_API_KEY: ${{ secrets.VITE_FACTCHECK_API_KEY }}
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
